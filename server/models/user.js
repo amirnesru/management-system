@@ -5,18 +5,20 @@ const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: [true, "Name is required"],
       trim: true,
-      minlength: 3,
+      minlength: [3, "Name must be at least 3 characters"],
     },
 
     email: {
       type: String,
-      required: true,
+      required: [true, "Email is required"],
       unique: true,
+      lowercase: true,
+      trim: true,
       validate: {
         validator: validator.isEmail,
-        message: "Please enter a valid email",
+        message: "Please enter a valid email address",
       },
     },
 
@@ -31,6 +33,19 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       enum: ["Admin", "Supervisor", "User"],
+      default: "User",
+    },
+
+    title: {
+      type: String,
+      trim: true,
+      default: null,
+    },
+
+    avatarUrl: {
+      type: String,
+      trim: true,
+      default: null,
     },
 
     division: {
@@ -40,15 +55,16 @@ const userSchema = new mongoose.Schema(
     },
 
     year: {
-      type: Number,
+      type: String,
       required: [true, "Year is required"],
-      min: [2000, "Year must be valid"],
-      max: [2100, "Year must be valid"],
+      enum: ["1st", "2nd", "3rd", "4th", "5th"],
     },
   },
   {
     timestamps: true,
   }
 );
+
+userSchema.index({ division: 1, role: 1 });
 
 module.exports = mongoose.model("User", userSchema);
