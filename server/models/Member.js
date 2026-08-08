@@ -20,6 +20,7 @@ const memberSchema = new mongoose.Schema(
       type: String,
       required: true,
       enum: ["On Campus", "Off Campus", "Withdrawn"],
+      default: "On Campus",
     },
   },
   {
