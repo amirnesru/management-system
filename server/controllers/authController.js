@@ -5,22 +5,19 @@ const generateToken = require("../utils/generateToken");
 // POST /api/auth/signup
 const signup = async (req, res) => {
   try {
-    const {
-      name,
-      email,
-      password,
-      role,
-      title,
-      avatarUrl,
-      division,
-      year,
-    } = req.body;
+    const { name, email, password, role, title, avatarUrl, division, year } =
+      req.body;
 
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
       return res.status(409).json({
         message: "Email is already registered",
+      });
+    }
+    if (!password || password.length < 8) {
+      return res.status(400).json({
+        message: "Password must be at least 8 characters",
       });
     }
 
@@ -55,7 +52,6 @@ const signup = async (req, res) => {
       token,
     });
   } catch (error) {
-    
     if (error.name === "ValidationError") {
       return res.status(400).json({
         message: "Validation failed",
@@ -95,11 +91,7 @@ const login = async (req, res) => {
       });
     }
 
-
-    const isPasswordCorrect = await bcrypt.compare(
-      password,
-      user.password
-    );
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
     if (!isPasswordCorrect) {
       return res.status(401).json({
@@ -108,11 +100,7 @@ const login = async (req, res) => {
     }
 
     // Generate JWT
-    const token = generateToken(
-      user._id,
-      user.role,
-      rememberMe
-    );
+    const token = generateToken(user._id, user.role, rememberMe);
 
     res.status(200).json({
       message: "Login successful",
