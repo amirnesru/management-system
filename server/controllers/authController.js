@@ -81,14 +81,12 @@ const login = async (req, res) => {
   try {
     const { email, password, rememberMe } = req.body;
 
-    // Validate login input
     if (!email || !password) {
       return res.status(400).json({
         message: "Email and password are required",
       });
     }
 
-    // Find user and explicitly include password
     const user = await User.findOne({ email }).select("+password");
 
     if (!user) {
