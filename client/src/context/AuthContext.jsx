@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import authService from "../services/authService";
 
 const AuthContext = createContext(null);
 
@@ -21,25 +22,7 @@ export function AuthProvider({ children }) {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        "http://localhost:5000/api/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-            password,
-          }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Login failed");
-      }
+      const data = await authService.login(email, password);
 
       localStorage.setItem("auth_token", data.token);
       localStorage.setItem("auth_user", JSON.stringify(data.user));
