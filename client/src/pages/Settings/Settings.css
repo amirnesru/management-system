@@ -1,0 +1,138 @@
+.settings-page {
+  padding: 24px;
+  background-color: #eef2f5;
+  min-height: 100vh;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.settings-card {
+  background-color: #e8ecef;
+  border-radius: 12px;
+  border: 1px solid #dcdfe4;
+  padding: 24px 32px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0;
+  border-bottom: 1px solid #d4d8dd;
+}
+
+.setting-row:last-child {
+  border-bottom: none;
+}
+
+.setting-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 600px;
+}
+
+.setting-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.setting-description {
+  font-size: 13px;
+  color: #8892a0;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Theme Dropdown Select */
+.theme-select {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #dcdfe4;
+  background-color: #dcdfe4;
+  color: #111827;
+  font-size: 13px;
+  font-weight: 500;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Toggle Switch Styling */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #cccccc;
+  transition: 0.3s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #ffffff;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #22c55e;
+}
+
+input:checked + .slider:before {
+  transform: translateX(22px);
+}/* Dark Mode Rules in App.css */
+body.dark-theme {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+body.dark-theme .settings-page {
+  background-color: #0f172a !important;
+}
+
+body.dark-theme .settings-card {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+body.dark-theme .setting-title {
+  color: #ffffff !important;
+}
+
+body.dark-theme .setting-description,
+body.dark-theme .setting-row {
+  color: #94a3b8 !important;
+  border-color: #334155 !important;
+}
+
+body.dark-theme .theme-select {
+  background-color: #334155 !important;
+  color: #ffffff !important;
+  border-color: #475569 !important;
+}
