@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import authService from "../services/authService";
+import authService from "../../services/authService";
 import "./Signup.css";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
 const YEAR_OPTIONS = [
-  { value: 1, label: "1st Year" },
-  { value: 2, label: "2nd Year" },
-  { value: 3, label: "3rd Year" },
-  { value: 4, label: "4th Year" },
-  { value: 5, label: "5th Year" },
+  { value: "1st", label: "1st Year" },
+  { value: "2nd", label: "2nd Year" },
+  { value: "3rd", label: "3rd Year" },
+  { value: "4th", label: "4th Year" },
+  { value: "5th", label: "5th Year" },
 ];
 
 export default function Signup() {
@@ -31,11 +31,22 @@ export default function Signup() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const validate = () => {
-    const { name, email, division, year, password, confirmPassword } = formData;
+    const {
+      name,
+      email,
+      division,
+      year,
+      password,
+      confirmPassword,
+    } = formData;
 
     if (
       !name.trim() ||
@@ -49,12 +60,14 @@ export default function Signup() {
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     if (!emailRegex.test(email)) {
       return "Please enter a valid email address.";
     }
 
-    const yearNum = Number(year);
-    if (!Number.isInteger(yearNum) || yearNum < 1 || yearNum > 5) {
+    const validYears = ["1st", "2nd", "3rd", "4th", "5th"];
+
+    if (!validYears.includes(year)) {
       return "Please select a valid year.";
     }
 
@@ -74,6 +87,7 @@ export default function Signup() {
     setErrorMessage("");
 
     const validationError = validate();
+
     if (validationError) {
       setErrorMessage(validationError);
       return;
@@ -86,21 +100,27 @@ export default function Signup() {
         name: formData.name.trim(),
         email: formData.email.trim(),
         division: formData.division.trim(),
-        year: Number(formData.year),
+        year: formData.year,
         password: formData.password,
       };
 
       const result = await authService.signup(payload);
 
-      if (result.success) {
-        navigate("/login");
+      // Backend returns a token on successful signup
+      if (result?.token) {
+        localStorage.setItem("auth_token", result.token);
+
+        navigate("/dashboard");
       } else {
-        setErrorMessage(result.error || "Signup failed. Please try again.");
+        setErrorMessage(
+          result?.message || "Signup failed. Please try again."
+        );
       }
     } catch (err) {
       setErrorMessage(
         err?.response?.data?.message ||
-          "Something went wrong. Please try again.",
+          err?.message ||
+          "Something went wrong. Please try again."
       );
     } finally {
       setLoading(false);
@@ -108,14 +128,10 @@ export default function Signup() {
   };
 
   return (
-    <div className="pageContainer">
-      <div className="halfBg" />
+    <div className="signup-page">
       <div className="card">
-        {/* Logo Section */}
         <div className="logoContainer">
-          <h1>
-            <span className="logoText">Logoipsum</span>
-          </h1>
+          <span className="logoText">Logoipsum</span>
         </div>
 
         <div className="inside-cont">
@@ -123,17 +139,25 @@ export default function Signup() {
             <h1 className="title">
               Welcome <span className="handEmoji">👋</span>
             </h1>
+
             <p className="subtitle">Please sign up here</p>
           </div>
 
-          {/* Error Feedback */}
-          {errorMessage && <div className="errorAlert">{errorMessage}</div>}
+          {errorMessage && (
+            <div className="errorAlert">
+              {errorMessage}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="form">
             <div className="part-2">
               <div className="inputGroup">
+                {/* Full Name */}
                 <div className="inputContainer">
-                  <label className="inputLabel">Full Name</label>
+                  <label className="inputLabel">
+                    Full Name
+                  </label>
+
                   <input
                     type="text"
                     name="name"
@@ -145,8 +169,12 @@ export default function Signup() {
                   />
                 </div>
 
+                {/* Email */}
                 <div className="inputContainer">
-                  <label className="inputLabel">Email Address</label>
+                  <label className="inputLabel">
+                    Email Address
+                  </label>
+
                   <input
                     type="email"
                     name="email"
@@ -158,8 +186,12 @@ export default function Signup() {
                   />
                 </div>
 
+                {/* Division */}
                 <div className="inputContainer">
-                  <label className="inputLabel">Division</label>
+                  <label className="inputLabel">
+                    Division
+                  </label>
+
                   <input
                     type="text"
                     name="division"
@@ -171,8 +203,12 @@ export default function Signup() {
                   />
                 </div>
 
+                {/* Year */}
                 <div className="inputContainer">
-                  <label className="inputLabel">Year</label>
+                  <label className="inputLabel">
+                    Year
+                  </label>
+
                   <select
                     name="year"
                     required
@@ -183,16 +219,24 @@ export default function Signup() {
                     <option value="" disabled>
                       Select year
                     </option>
+
                     {YEAR_OPTIONS.map((opt) => (
-                      <option key={opt.value} value={opt.value}>
+                      <option
+                        key={opt.value}
+                        value={opt.value}
+                      >
                         {opt.label}
                       </option>
                     ))}
                   </select>
                 </div>
 
+                {/* Password */}
                 <div className="inputContainer">
-                  <label className="inputLabel">Password</label>
+                  <label className="inputLabel">
+                    Password
+                  </label>
+
                   <div className="passwordWrapper">
                     <input
                       type={showPassword ? "text" : "password"}
@@ -203,26 +247,43 @@ export default function Signup() {
                       onChange={handleChange}
                       className="inputControl passwordInput"
                     />
+
                     <button
                       type="button"
-                      onClick={() => setShowPassword(!showPassword)}
+                      onClick={() =>
+                        setShowPassword(!showPassword)
+                      }
                       className="eyeButton"
                       aria-label="Toggle password visibility"
                     >
                       {showPassword ? (
-                        <FiEyeOff size={24} color="#16151C" />
+                        <FiEyeOff
+                          size={24}
+                          color="#16151C"
+                        />
                       ) : (
-                        <FiEye size={24} color="#16151C" />
+                        <FiEye
+                          size={24}
+                          color="#16151C"
+                        />
                       )}
                     </button>
                   </div>
                 </div>
 
+                {/* Confirm Password */}
                 <div className="inputContainer">
-                  <label className="inputLabel">Confirm Password</label>
+                  <label className="inputLabel">
+                    Confirm Password
+                  </label>
+
                   <div className="passwordWrapper">
                     <input
-                      type={showConfirmPassword ? "text" : "password"}
+                      type={
+                        showConfirmPassword
+                          ? "text"
+                          : "password"
+                      }
                       name="confirmPassword"
                       required
                       placeholder="••••••••••••"
@@ -230,18 +291,27 @@ export default function Signup() {
                       onChange={handleChange}
                       className="inputControl passwordInput"
                     />
+
                     <button
                       type="button"
                       onClick={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
+                        setShowConfirmPassword(
+                          !showConfirmPassword
+                        )
                       }
                       className="eyeButton"
                       aria-label="Toggle confirm password visibility"
                     >
                       {showConfirmPassword ? (
-                        <FiEyeOff size={24} color="#16151C" />
+                        <FiEyeOff
+                          size={24}
+                          color="#16151C"
+                        />
                       ) : (
-                        <FiEye size={24} color="#16151C" />
+                        <FiEye
+                          size={24}
+                          color="#16151C"
+                        />
                       )}
                     </button>
                   </div>
@@ -249,16 +319,20 @@ export default function Signup() {
               </div>
             </div>
 
-            {/* Submit Button */}
-            <button type="submit" disabled={loading} className="submitBtn">
+            <button
+              type="submit"
+              disabled={loading}
+              className="submitBtn"
+            >
               <span className="btn-text">
                 {loading ? "Signing up..." : "Sign Up"}
               </span>
             </button>
           </form>
+
           <p className="loginRedirectText">
             Already have an account?{" "}
-            <Link to="/" className="loginLink">
+            <Link to="/login" className="loginLink">
               LogIn
             </Link>
           </p>
