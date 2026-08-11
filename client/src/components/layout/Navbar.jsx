@@ -7,7 +7,6 @@ export default function Navbar() {
   const location = useLocation();
   const { user } = useAuth();
 
-  // Dynamic user details with fallbacks
   const userName = user?.name || user?.fullName || "User";
   const userFirstName = userName.split(" ")[0];
   const userRole = user?.role || "Member";
