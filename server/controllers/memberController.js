@@ -71,9 +71,23 @@ const getMembers = async (req, res) => {
       .populate("user", "-password")
       .sort({ createdAt: -1 });
 
+    const formattedMembers = members.map((member) => ({
+      _id: member._id,
+      memberId: member.memberId,
+      status: member.status,
+
+      name: member.user?.name || "",
+      email: member.user?.email || "",
+      role: member.user?.role || "",
+      division: member.user?.division || "",
+      year: member.user?.year || "",
+
+      userId: member.user?._id || null,
+    }));
+
     res.status(200).json({
-      count: members.length,
-      members,
+      count: formattedMembers.length,
+      members: formattedMembers,
     });
   } catch (error) {
     res.status(500).json({
