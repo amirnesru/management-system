@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 const generateToken = (userId, role, rememberMe = false) => {
-  const expiresIn = rememberMe ? "30d" : "1h";
+  const expiresIn = rememberMe ? "30d" : "2d";
 
   return jwt.sign(
     {
