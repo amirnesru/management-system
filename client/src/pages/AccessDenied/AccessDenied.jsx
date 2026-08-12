@@ -14,8 +14,8 @@ export default function AccessDenied() {
           You don't have permission to access this page.
         </p>
 
-        <Link to="/dashboard" className="access-denied-button">
-          Back to Dashboard
+        <Link to="/login" className="access-denied-button">
+          Back to Login
         </Link>
       </div>
     </div>
