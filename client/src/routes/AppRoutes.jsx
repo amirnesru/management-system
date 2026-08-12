@@ -14,20 +14,23 @@ import Dashboard from "../pages/Dashboard/Dashboard";
 import AllMembers from "../pages/AllMember/AllMembers";
 import Attendance from "../pages/Attendance/Attendance";
 import Settings from "../pages/Settings/Settings";
+
+// Other Pages
 import NotFound from "../pages/NotFound/NotFound";
 import AccessDenied from "../pages/AccessDenied/AccessDenied";
 
 export default function AppRoutes() {
   return (
     <Routes>
-      {/* Public Routes */}
+      {/* ==================== PUBLIC ROUTES ==================== */}
+
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
 
-      {/* All protected routes */}
+      {/* ==================== PROTECTED ROUTES ==================== */}
+
       <Route element={<ProtectedRoute />}>
         <Route element={<DashboardLayout />}>
-          
           {/* Dashboard */}
           <Route
             path="/dashboard"
@@ -38,7 +41,7 @@ export default function AppRoutes() {
             }
           />
 
-          {/* Members */}
+          {/* All Members */}
           <Route
             path="/members"
             element={
@@ -68,18 +71,18 @@ export default function AppRoutes() {
             }
           />
         </Route>
-
-        {/* Access Denied */}
-        <Route path="/access-denied" element={<AccessDenied />} />
       </Route>
 
-      {/* Default */}
-      <Route
-        path="/"
-        element={<Navigate to="/dashboard" replace />}
-      />
+      {/* ==================== ACCESS DENIED ==================== */}
 
-      {/* 404 */}
+      <Route path="/access-denied" element={<AccessDenied />} />
+
+      {/* ==================== DEFAULT ==================== */}
+
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+      {/* ==================== 404 ==================== */}
+
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
