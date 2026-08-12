@@ -131,7 +131,22 @@ export default function Signup() {
     <div className="signup-page">
       <div className="card">
         <div className="logoContainer">
-          <span className="logoText">Logoipsum</span>
+          <span
+            className="brand-title"
+            style={{
+              fontFamily: '"Cormorant Garamond", serif',
+              fontSize: "28px",
+              fontWeight: 600,
+              color: "#110051",
+              letterSpacing: "1px",
+              background: "#F4F1FF",
+              padding: "6px 14px",
+              borderRadius: "8px",
+              display: "inline-block",
+            }}
+          >
+            𝓜𝓪𝓷𝓪𝓰𝓮𝓧
+          </span>
         </div>
 
         <div className="inside-cont">
