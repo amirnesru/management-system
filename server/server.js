@@ -1,7 +1,13 @@
 const express = require("express");
 require("dotenv").config();
 const cors = require("cors");
+
 const connectDB = require("./config/db");
+const User = require("./models/User");
+
+// Middleware
+const protect = require("./middleware/authMiddleware");
+const authorize = require("./middleware/roleMiddleware");
 
 // Routes
 const authRoutes = require("./routes/authRoutes");
@@ -14,23 +20,37 @@ const PORT = process.env.PORT || 5000;
 // Connect to Database
 connectDB();
 
-// Global Middleware
-app.use(
-  cors({
-    origin: "http://localhost:5173", // Allow requests from your Vite frontend
-    credentials: true,               // Allow headers / cookies if needed
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+app.use(cors());
+app.use(express.json());
 
-app.use(express.json()); // Body parser (only needed once)
-
-// API Endpoints
 app.use("/api/auth", authRoutes);
 app.use("/api/members", memberRoutes);
 app.use("/api/attendance", attendanceRoutes);
 
+app.get(
+  "/api/users",
+  protect,
+  authorize("Admin", "Supervisor"),
+  async (req, res) => {
+    try {
+      const users = await User.find()
+        .select("_id name email role division year")
+        .sort({ name: 1 });
+
+      res.status(200).json({
+        count: users.length,
+        users,
+      });
+    } catch (error) {
+      console.error("Get users error:", error);
+
+      res.status(500).json({
+        message: "Failed to fetch users.",
+        error: error.message,
+      });
+    }
+  },
+);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
