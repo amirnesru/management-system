@@ -1,5 +1,7 @@
 export const permissions = {
   Admin: {
+    canViewDashboard: true,
+
     canViewMembers: true,
     canCreateMember: true,
     canUpdateMember: true,
@@ -13,6 +15,8 @@ export const permissions = {
   },
 
   Supervisor: {
+    canViewDashboard: true,
+
     canViewMembers: true,
     canCreateMember: true,
     canUpdateMember: true,
@@ -26,6 +30,8 @@ export const permissions = {
   },
 
   User: {
+    canViewDashboard: true,
+
     canViewMembers: true,
     canCreateMember: false,
     canUpdateMember: false,
@@ -37,11 +43,12 @@ export const permissions = {
 
     canAccessSettings: false,
   },
-  
 };
 
 export const hasPermission = (role, action) => {
-  if (!role || !permissions[role]) return false;
+  if (!role || !permissions[role]) {
+    return false;
+  }
 
   return Boolean(permissions[role][action]);
 };
